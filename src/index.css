@@ -349,7 +349,10 @@
   footer{ background:var(--ink); color:var(--sand); margin-top:20px; }
   .footer-top{ padding:50px 0 30px; display:grid; grid-template-columns:1.3fr 1fr 1fr 1fr; gap:30px; }
   @media(max-width:780px){ .footer-top{ grid-template-columns:1fr 1fr; } }
-  @media(max-width:480px){ .footer-top{ grid-template-columns:1fr; } }
+  @media(max-width:480px){
+    .footer-top{ grid-template-columns:1fr; padding:50px 24px 30px; }
+    .footer-bottom{ padding-left:24px; padding-right:24px; }
+  }
   .footer-brand .logo-text .top{ color:var(--sand); }
   .footer-brand p{ font-size:13px; color:#B9AF98; line-height:1.6; margin-top:12px; max-width:32ch; }
   footer h5{ font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--gold); margin-bottom:14px; }

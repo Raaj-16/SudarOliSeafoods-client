@@ -2,3 +2,4 @@
 // developing and at your deployed backend in production, without code changes.
 // Vite only exposes env vars prefixed with VITE_ to the browser bundle.
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000'
+export const WHATSAPP_NUMBER = '916379386564'
