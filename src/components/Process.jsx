@@ -3,6 +3,7 @@ const STEPS = [
     n: '01',
     title: 'The catch comes in',
     body: 'Boats land at first light. We buy directly from crews along the Nagapattinam and Karaikal coast — nothing frozen, nothing held over from a previous day.',
+    image: '/process/step-1-catch.jpg',
     path: 'M6 30c8-14 26-18 36-8-6 10-20 14-30 10 5-6 6-12 2-18',
     path2: 'M6 30l4 8M40 22l4-6',
   },
@@ -10,6 +11,7 @@ const STEPS = [
     n: '02',
     title: 'Cleaned within hours',
     body: "Fish is gutted, scaled and rinsed the same morning it's landed. Bigger fish like vanjaram and choora are cut into steaks at this stage.",
+    image: '/process/step-2-cleaning.jpg',
     path: 'M10 12h28l-4 24H14L10 12Z',
     path2: 'M16 12V8h16v4',
   },
@@ -17,23 +19,30 @@ const STEPS = [
     n: '03',
     title: 'Hand-salted',
     body: 'Rock salt is rubbed in by hand at a ratio tuned to each fish — enough to preserve and season, not so much that it overpowers the cooking.',
+    image: '/process/step-3-salting.jpg',
     circles: true,
   },
   {
     n: '04',
     title: 'Racked in open sun',
     body: 'Laid out on bamboo racks and turned twice a day. Depending on the fish and the weather, this takes three to five days — no shortcuts, no machine dryers.',
+    image: '/process/step-4-drying.jpg',
     lines: true,
   },
   {
     n: '05',
     title: 'Packed & shipped',
     body: 'Sorted by weight, vacuum-sealed in food-grade pouches, and shipped out — Chennai orders the same evening, other Tamil Nadu districts in 2–3 days.',
+    image: '/process/step-5-packing.jpg',
     rect: true,
   },
 ]
 
 function StepIcon({ step }) {
+  if (step.image) {
+    return <img src={step.image} alt="" />
+  }
+
   if (step.circles) {
     return (
       <svg viewBox="0 0 48 48" fill="none" stroke="#1E3341" strokeWidth="2">
