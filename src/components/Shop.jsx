@@ -27,11 +27,11 @@ export default function Shop({ onOpenPDP }) {
           <button className={`chip${filter === 'all' ? ' active' : ''}`} onClick={() => setFilter('all')}>
             All
           </button>
-          <button className={`chip${filter === 'small' ? ' active' : ''}`} onClick={() => setFilter('small')}>
-            Small fish
+          <button className={`chip${filter === 'Raw' ? ' active' : ''}`} onClick={() => setFilter('Raw')}>
+            Raw fish
           </button>
-          <button className={`chip${filter === 'big' ? ' active' : ''}`} onClick={() => setFilter('big')}>
-            Big fish
+          <button className={`chip${filter === 'Cleaned' ? ' active' : ''}`} onClick={() => setFilter('Cleaned')}>
+            Cleaned fish
           </button>
           <div className="search-box">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4A4436" strokeWidth="2">
