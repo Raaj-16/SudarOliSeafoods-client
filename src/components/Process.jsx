@@ -19,14 +19,14 @@ const STEPS = [
     n: '03',
     title: 'Hand-salted',
     body: 'Rock salt is rubbed in by hand at a ratio tuned to each fish — enough to preserve and season, not so much that it overpowers the cooking.',
-    image: '/public/process/salting.jpeg',
+    image: '/public/process/Salting.jpeg',
     circles: true,
   },
   {
     n: '04',
     title: 'Racked in open sun',
     body: 'Laid out on bamboo racks and turned twice a day. Depending on the fish and the weather, this takes three to five days — no shortcuts, no machine dryers.',
-    image: '/public/process/drying.jpeg',
+    image: '/public/process/Drying.jpeg',
     lines: true,
   },
   {
