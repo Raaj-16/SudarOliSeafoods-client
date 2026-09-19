@@ -40,7 +40,7 @@ export const PRODUCTS = [
     stockQty: 3, icon: 'fishB', image: '/products/Kanakathai.jpeg',
     weights: [{ label: '250 g', price: 125 }, { label: '500 g', price: 250 }, { label: '1 kg', price: 500 }],
   }, {
-    id: 'chennakunni', name: 'Chennakunni', local: 'Dried Pink Perch', cat: 'Raw  ',
+    id: 'chennakunni', name: 'Chennakunni', local: 'Dried Pink Perch', cat: 'Raw',
     desc: 'Lightly salted and pleasantly mild — a versatile choice for simple home-style recipes loaded with Protein.',
     stockQty: 3, icon: 'fishB', image: '/products/Chennanguni.jpeg',
     weights: [{ label: '250 g', price: 150 }, { label: '500 g', price: 300 }, { label: '1 kg', price: 600 }],
@@ -85,11 +85,6 @@ export const PRODUCTS = [
     desc: 'A flavourful everyday dry fish with a satisfying bite, perfect for kuzhambu.',
     stockQty: 3, icon: 'fishB', image: '/products/Kanakathai.jpeg',
     weights: [{ label: '250 g', price: 145 }, { label: '500 g', price: 290 }, { label: '1 kg', price: 580 }],
-  }, {
-    id: 'chennakunni', name: 'Chennakunni', local: 'Dried Pink Perch', cat: 'Cleaned',
-    desc: 'Lightly salted and pleasantly mild — a versatile choice for simple home-style recipes loaded with Protein.',
-    stockQty: 3, icon: 'fishB', image: '/products/Chennanguni.jpeg',
-    weights: [{ label: '250 g', price: 170 }, { label: '500 g', price: 340 }, { label: '1 kg', price: 680 }],
   },
 ]
 

@@ -1,7 +1,18 @@
 import logo440 from '../assets/logo-440.png'
 import { WHATSAPP_NUMBER } from '../config.js'
 
-export default function Footer({ onFilterAndShop, onShowProcess }) {
+const FISH_LINKS = [
+  ['Nethili Karuvadu', 'nethili'],
+  ['Mathi Karuvadu', 'mathi'],
+  ['Vanjaram Karuvadu', 'vanjaram'],
+  ['Vaala Karuvadu', 'vaala'],
+  ['Nagarai Karuvadu', 'nagarai'],
+  ['Seela Karuvadu', 'seela'],
+  ['Kaana Kaththai Karuvadu', 'kaanakaththai'],
+  ['Chennakunni', 'chennakunni'],
+]
+
+export default function Footer({ onOpenPDP, onShowProcess }) {
   return (
     <footer id="footer-contact">
       <div className="wrap footer-top">
@@ -34,28 +45,19 @@ export default function Footer({ onFilterAndShop, onShowProcess }) {
         <div>
           <h5>Shop</h5>
           <ul>
-            <li>
-              <a
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault()
-                  onFilterAndShop('small')
-                }}
-              >
-                Small fish
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault()
-                  onFilterAndShop('big')
-                }}
-              >
-                Big fish
-              </a>
-            </li>
+            {FISH_LINKS.map(([name, id]) => (
+              <li key={id}>
+                <a
+                  href="#shop"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    onOpenPDP(id)
+                  }}
+                >
+                  {name}
+                </a>
+              </li>
+            ))}
           </ul>
         </div>
         <div>

@@ -184,7 +184,7 @@ export default function App() {
       <Toast message={toast.message} show={toast.show} />
 
       <Footer
-        onFilterAndShop={() => scrollToShop()}
+        onOpenPDP={openPDP}
         onShowProcess={showProcess}
       />
     </>
