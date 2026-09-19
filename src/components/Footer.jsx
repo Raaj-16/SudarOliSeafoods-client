@@ -1,4 +1,5 @@
 import logo440 from '../assets/logo-440.png'
+import { WHATSAPP_NUMBER } from '../config.js'
 
 export default function Footer({ onFilterAndShop, onShowProcess }) {
   return (
@@ -18,7 +19,7 @@ export default function Footer({ onFilterAndShop, onShowProcess }) {
                 <circle cx="17.5" cy="6.5" r="1" />
               </svg>
             </a>
-            <a href="https://wa.me/916379386564" aria-label="WhatsApp">
+            <a href={`https://wa.me/${WHATSAPP_NUMBER}`} aria-label="WhatsApp">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#EDE4D2" strokeWidth="1.8">
                 <path d="M21 11.5a8.5 8.5 0 0 1-12.5 7.5L3 20l1.1-5.3A8.5 8.5 0 1 1 21 11.5Z" />
               </svg>

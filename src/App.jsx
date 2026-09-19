@@ -7,6 +7,7 @@ import CartDrawer from './components/CartDrawer.jsx'
 import CheckoutModal from './components/CheckoutModal.jsx'
 import Toast from './components/Toast.jsx'
 import Footer from './components/Footer.jsx'
+import { WHATSAPP_NUMBER } from './config.js'
 
 export default function App() {
   const [view, setView] = useState('home') // 'home' | 'pdp' | 'process'
@@ -95,17 +96,17 @@ export default function App() {
   }
 
   function buyOnWhatsapp(product, weight, qty) {
-    let msg = "Hi Sudar Oli, I'd like to order:%0A"
+    const lines = ["Hi Sudar Oli, I'd like to order:"]
     if (product && weight) {
-      msg += `- ${product.name} (${weight.label}) x${qty} — ₹${weight.price * qty}`
+      lines.push(`- ${product.name} (${weight.label}) x${qty} — ₹${weight.price * qty}`)
     } else if (cart.length) {
       cart.forEach((c) => {
-        msg += `- ${c.name} (${c.weight}) x${c.qty} — ₹${c.price * c.qty}%0A`
+        lines.push(`- ${c.name} (${c.weight}) x${c.qty} — ₹${c.price * c.qty}`)
       })
       const subtotal = cart.reduce((a, c) => a + c.price * c.qty, 0)
-      msg += `Subtotal: ₹${subtotal}`
+      lines.push(`Subtotal: ₹${subtotal}`)
     }
-    window.open(`https://wa.me/919840012345?text=${msg}`, '_blank')
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(lines.join('\n'))}`, '_blank')
   }
 
   function checkoutFromCart() {
