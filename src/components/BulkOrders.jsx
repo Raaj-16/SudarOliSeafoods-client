@@ -17,32 +17,50 @@ const fishChoices = PRODUCTS.filter((product, index, arr) => {
 
 export default function BulkOrders({ onBackHome, onBackShop }) {
   const [form, setForm] = useState(initialForm)
-  const [selectedFish, setSelectedFish] = useState(fishChoices[0])
-  const [qtyKg, setQtyKg] = useState(2)
+  const [selectedFish, setSelectedFish] = useState([])
 
   const selectedDisplay = useMemo(() => {
-    return selectedFish ? `${selectedFish.name} • ${qtyKg} kg` : 'Select a fish'
-  }, [selectedFish, qtyKg])
+    if (!selectedFish.length) return 'Select fish'
+    return `${selectedFish.length} fish selected`
+  }, [selectedFish])
 
   function updateField(field, value) {
     setForm((prev) => ({ ...prev, [field]: value }))
   }
 
-  function changeQty(delta) {
-    setQtyKg((prev) => Math.max(2, prev + delta))
+  function toggleFish(product) {
+    setSelectedFish((prev) => {
+      const exists = prev.some((item) => item.product.id === product.id)
+      if (exists) {
+        return prev.filter((item) => item.product.id !== product.id)
+      }
+      return [...prev, { product, qtyKg: 2 }]
+    })
+  }
+
+  function changeQty(productId, delta) {
+    setSelectedFish((prev) =>
+      prev.map((item) =>
+        item.product.id === productId ? { ...item, qtyKg: Math.max(2, item.qtyKg + delta) } : item,
+      ),
+    )
   }
 
   function submitBulkOrder(e) {
     e.preventDefault()
 
+    if (!selectedFish.length) {
+      window.alert('Please select at least one fish type before sending the bulk inquiry.')
+      return
+    }
+
     const lines = [
-      'Hi Sudar Oli, I would like to place a bulk / wholesale order.',
+      'Hi Sudar Oli Dry Sea Foods, I would like to place a bulk / wholesale order.',
       '',
       `Name: ${form.name || 'Not provided'}`,
       `Business / restaurant: ${form.business || 'Not provided'}`,
       `Contact number: ${form.phone || 'Not provided'}`,
-      `Fish selected: ${selectedFish?.name || 'Not selected'}`,
-      `Quantity: ${qtyKg} kg`,
+      `Fish selected: ${selectedFish.map((item) => `${item.product.name} (${item.qtyKg} kg)`).join(', ')}`,
       `Delivery location: ${form.location || 'Not provided'}`,
       `Notes: ${form.notes || 'None'}`,
     ]
@@ -77,8 +95,8 @@ export default function BulkOrders({ onBackHome, onBackShop }) {
                   <button
                     type="button"
                     key={product.id}
-                    className={`bulk-product${selectedFish?.id === product.id ? ' active' : ''}`}
-                    onClick={() => setSelectedFish(product)}
+                    className={`bulk-product${selectedFish.some((fish) => fish.product.id === product.id) ? ' active' : ''}`}
+                    onClick={() => toggleFish(product)}
                   >
                     <span className="bulk-product-ico">
                       <ProductIcon icon={product.icon} image={product.image} alt={product.name} viewBox="0 0 120 80" />
@@ -90,19 +108,27 @@ export default function BulkOrders({ onBackHome, onBackShop }) {
             </div>
 
             <div className="bulk-qty-block">
-              <div className="label">Quantity</div>
-              <div className="bulk-qty-row">
-                <div className="stepper bulk-stepper">
-                  <button type="button" aria-label="Decrease quantity" onClick={() => changeQty(-2)}>
-                    −
-                  </button>
-                  <div className="val">{qtyKg} kg</div>
-                  <button type="button" aria-label="Increase quantity" onClick={() => changeQty(2)}>
-                    +
-                  </button>
+              <div className="label">Selected fish quantities</div>
+              <div className="bulk-selected">{selectedDisplay}</div>
+
+              {selectedFish.length > 0 && (
+                <div className="bulk-qty-list">
+                  {selectedFish.map((item) => (
+                    <div key={item.product.id} className="bulk-qty-item">
+                      <div className="bulk-qty-name">{item.product.name}</div>
+                      <div className="stepper bulk-stepper">
+                        <button type="button" aria-label={`Decrease quantity for ${item.product.name}`} onClick={() => changeQty(item.product.id, -2)}>
+                          −
+                        </button>
+                        <div className="val">{item.qtyKg} kg</div>
+                        <button type="button" aria-label={`Increase quantity for ${item.product.name}`} onClick={() => changeQty(item.product.id, 2)}>
+                          +
+                        </button>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                <div className="bulk-selected">{selectedDisplay}</div>
-              </div>
+              )}
             </div>
 
             <label>
