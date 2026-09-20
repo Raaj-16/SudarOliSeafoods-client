@@ -95,11 +95,11 @@ export default function Process({ onBackHome, onShopClick }) {
         <section style={{ maxWidth: 720, marginBottom: 44 }}>
           <div className="eyebrow">Our process</div>
           <h1 style={{ fontSize: 'clamp(28px,4vw,42px)', lineHeight: 1.08 }}>
-            From the boat to the rack, in one day.
+            From the boat to the rack, in a Week.
           </h1>
           <p className="lead" style={{ marginTop: 16 }}>
             No chemical dryers, no bleaching agents, no cold-storage shortcuts. Every batch of Sudar Oli dry fish
-            goes through the same five steps our families have used along the Nagapattinam coast for generations —
+            goes through the same five steps our families have used along the Tamil Nadu coast for generations —
             which is also why some weeks a variety sells out rather than being restocked on demand.
           </p>
         </section>
