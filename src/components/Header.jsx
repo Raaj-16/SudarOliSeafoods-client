@@ -105,7 +105,7 @@ export default function Header({ view, onNavHome, onNavShop, onNavProcess, onNav
                 onChange={(e) => setQuery(e.target.value)}
               />
               <div className="search-results">
-                {!q && <div className="sr-hint">Try "vanjaram", "nethili", "choora"…</div>}
+                {!q && <div className="sr-hint">Try "vanjaram", "nethili", "soora"…</div>}
                 {q && matches.length === 0 && <div className="sr-empty">No dry fish matches "{q}".</div>}
                 {q &&
                   matches.map((p) => (

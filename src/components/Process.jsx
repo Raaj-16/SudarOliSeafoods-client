@@ -2,7 +2,7 @@ const STEPS = [
   {
     n: '01',
     title: 'The catch comes in',
-    body: 'Boats land at first light. We buy directly from crews along the Nagapattinam and Karaikal coast — nothing frozen, nothing held over from a previous day.',
+    body: 'Boats land at first light. We buy directly from crews along the Tamil Nadu coast — nothing frozen, nothing held over from a previous day.',
     image: '/process/catching.jpeg',
     path: 'M6 30c8-14 26-18 36-8-6 10-20 14-30 10 5-6 6-12 2-18',
     path2: 'M6 30l4 8M40 22l4-6',
@@ -10,7 +10,7 @@ const STEPS = [
   {
     n: '02',
     title: 'Cleaned within hours',
-    body: "Fish is gutted, scaled and rinsed the same morning it's landed. Bigger fish like vanjaram and choora are cut into steaks at this stage.",
+    body: "Fish is gutted, scaled and rinsed the same morning it's landed. Bigger fish like vanjaram and soora are cut into steaks at this stage.",
     image: '/process/cleaning.jpeg',
     path: 'M10 12h28l-4 24H14L10 12Z',
     path2: 'M16 12V8h16v4',
