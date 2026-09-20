@@ -42,7 +42,7 @@ export default function PDP({ productId, onBackHome, onBackShop, onOpenPDP, onAd
     },
     {
       title: 'Delivery & packaging',
-      body: 'Vacuum-sealed in food-grade pouches to control odour in transit. Chennai orders placed before 3 PM are delivered the same day. Other Tamil Nadu districts: 2–3 working days. Cash on delivery available on orders under ₹2,000.',
+      body: 'Vacuum-sealed in food-grade pouches to control odour in transit. Chennai orders placed before 3 PM are delivered the same day. Other Tamil Nadu districts: 2–3 working days. Cash on delivery available on orders above ₹2,000.',
     },
     {
       title: "Where it's from",

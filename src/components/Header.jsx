@@ -3,7 +3,7 @@ import logo220 from '../assets/logo-220.png'
 import ProductIcon from './ProductIcon.jsx'
 import { PRODUCTS, stockLabel, minPrice } from '../data/products.js'
 
-export default function Header({ view, onNavHome, onNavShop, onNavProcess, onNavContact, onOpenPDP, cartCount, onOpenCart }) {
+export default function Header({ view, onNavHome, onNavShop, onNavProcess, onNavBulk, onNavContact, onOpenPDP, cartCount, onOpenCart }) {
   const [searchOpen, setSearchOpen] = useState(false)
   const [query, setQuery] = useState('')
   const wrapRef = useRef(null)
@@ -41,7 +41,10 @@ export default function Header({ view, onNavHome, onNavShop, onNavProcess, onNav
     : []
 
   const navKey =
-    view === 'pdp' || view === 'shop' ? 'shop' : view === 'process' ? 'process' : view === 'contact' ? 'contact' : 'home'
+    view === 'pdp' || view === 'shop' ? 'shop' :
+    view === 'process' ? 'process' :
+    view === 'bulk' ? 'bulk' :
+    view === 'contact' ? 'contact' : 'home'
 
   return (
     <header className="site">
@@ -70,6 +73,9 @@ export default function Header({ view, onNavHome, onNavShop, onNavProcess, onNav
           </button>
           <button className={navKey === 'process' ? 'active' : ''} onClick={onNavProcess}>
             How We Dry
+          </button>
+          <button className={navKey === 'bulk' ? 'active' : ''} onClick={onNavBulk}>
+            Bulk Orders
           </button>
           <button className={navKey === 'contact' ? 'active' : ''} onClick={onNavContact}>
             Contact

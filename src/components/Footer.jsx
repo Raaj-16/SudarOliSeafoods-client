@@ -12,7 +12,7 @@ const FISH_LINKS = [
   ['Chennakunni', 'chennakunni'],
 ]
 
-export default function Footer({ onOpenPDP, onShowProcess }) {
+export default function Footer({ onOpenPDP, onShowProcess, onShowBulkOrders }) {
   return (
     <footer id="footer-contact">
       <div className="wrap footer-top">
@@ -47,7 +47,7 @@ export default function Footer({ onOpenPDP, onShowProcess }) {
           <ul>
             {FISH_LINKS.map(([name, id]) => (
               <li key={id}>
-                <a
+                <a style={{ textDecoration: 'none' }}
                   href="#shop"
                   onClick={(e) => {
                     e.preventDefault()
@@ -64,7 +64,7 @@ export default function Footer({ onOpenPDP, onShowProcess }) {
           <h5>Shop info</h5>
           <ul>
             <li>
-              <a
+              <a style={{ textDecoration: 'none' }}
                 href="#"
                 onClick={(e) => {
                   e.preventDefault()
@@ -75,7 +75,14 @@ export default function Footer({ onOpenPDP, onShowProcess }) {
               </a>
             </li>
             <li>
-              <a href="#" onClick={(e) => e.preventDefault()}>
+              <a
+                style={{ textDecoration: 'none' }}
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault()
+                  onShowBulkOrders?.()
+                }}
+              >
                 Bulk / wholesale orders
               </a>
             </li>
@@ -84,11 +91,12 @@ export default function Footer({ onOpenPDP, onShowProcess }) {
         <div>
           <h5>Contact</h5>
           <ul>
-            <li>
+            <li style={{ display: 'flex', flexDirection: 'column', width: '278px' }}>
               <a
                 href="https://maps.google.com/?q=No+38,+PH+ROAD+-+Poonamalle+Highway,+Nerkundram,+Chennai,+Tamil+Nadu+600107"
                 target="_blank"
                 rel="noreferrer"
+                style={{ textDecoration: 'none' }}
               >
                 No 38, PH ROAD - Poonamalle Highway,<br />
                 Nerkundram (Near People's Flat),<br />
@@ -96,14 +104,16 @@ export default function Footer({ onOpenPDP, onShowProcess }) {
               </a>
             </li>
             <li>
-              <a href="tel:+916379386564">+91 63793 86564</a>,{' '}
-              <a href="tel:+919941564349">+91 99415 64349</a>
+              <a href="tel:+916379386564" style={{ textDecoration: 'none' }}>+91 63793 86564</a>,{' '}
+              <a href="tel:+919941564349" style={{ textDecoration: 'none' }}>+91 99415 64349</a>
               <br />
-              <a href="tel:+919790991369">+91 97909 91369</a>,{' '}
-              <a href="tel:+917299419828">+91 72994 19828</a>
+              <a href="tel:+919790991369" style={{ textDecoration: 'none' }}>+91 97909 91369</a>,{' '}
+              <a href="tel:+917299419828" style={{ textDecoration: 'none' }}>+91 72994 19828</a>
             </li>
             <li>
-              <a href="mailto:SudaroliDryseafoods@gmail.com">SudaroliDryseafoods@gmail.com</a>
+              <a href="mailto:SudaroliDryseafoods@gmail.com" style={{ textDecoration: 'none' }}>
+                SudaroliDryseafoods@gmail.com
+              </a>
             </li>
             <li>Mon–Sat, 10 AM – 9 PM</li>
           </ul>
