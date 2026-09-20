@@ -27,7 +27,7 @@ export default function CartDrawer({ open, cart, onClose, onRemove, onCheckout, 
                 Head back to the rack and pick something out.
               </p>
               <button className="btn btn-outline btn-sm" onClick={onBrowse}>
-                Browse dry fish
+                Shop dry fish
               </button>
             </div>
           ) : (
