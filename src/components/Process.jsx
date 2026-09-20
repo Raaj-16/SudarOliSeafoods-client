@@ -130,8 +130,8 @@ export default function Process({ onBackHome, onShopClick }) {
           <p style={{ color: 'var(--ink-soft)', fontSize: 14.5, lineHeight: 1.65 }}>
             Because everything here depends on the catch, the weather and a multi-day drying window, we never hold
             more stock than what actually comes off the racks. When a variety sells out on the shop page, it's
-            genuinely out — not a pricing trick. Use the "Notify me" option on that product and we'll message you the
-            moment the next batch is ready.
+            genuinely out — not a pricing trick. Ask us on WhatsApp about the next batch and we'll confirm when it is
+            ready.
           </p>
         </section>
 

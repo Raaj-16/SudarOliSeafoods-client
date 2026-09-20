@@ -8,9 +8,6 @@ export default function PDP({ productId, onBackHome, onBackShop, onOpenPDP, onAd
   const [weightIdx, setWeightIdx] = useState(0)
   const [qty, setQty] = useState(1)
   const [openAcc, setOpenAcc] = useState([true, false, false])
-  const [notifyValue, setNotifyValue] = useState('')
-  const [notifySubmitted, setNotifySubmitted] = useState(false)
-
   if (!p) return null
 
   const s = stockStatus(p)
@@ -24,12 +21,6 @@ export default function PDP({ productId, onBackHome, onBackShop, onOpenPDP, onAd
 
   function toggleAcc(i) {
     setOpenAcc((arr) => arr.map((v, idx) => (idx === i ? !v : v)))
-  }
-
-  function submitNotify(e) {
-    e.preventDefault()
-    if (!notifyValue.trim()) return
-    setNotifySubmitted(true)
   }
 
   const related = PRODUCTS.filter((x) => x.id !== p.id && x.cat === p.cat).slice(0, 4)
@@ -163,29 +154,10 @@ export default function PDP({ productId, onBackHome, onBackShop, onOpenPDP, onAd
             {s === 'out' && (
               <div className="notify-box">
                 <h4>Out of stock right now</h4>
-                <p>Leave your WhatsApp number or email — we'll message you the moment this batch is back on the rack.</p>
-                {!notifySubmitted && (
-                  <form className="notify-form" onSubmit={submitNotify}>
-                    <input
-                      type="text"
-                      placeholder="Phone or email"
-                      required
-                      value={notifyValue}
-                      onChange={(e) => setNotifyValue(e.target.value)}
-                    />
-                    <button type="submit" className="btn btn-rust btn-sm">
-                      Notify me
-                    </button>
-                  </form>
-                )}
-                <div className="notify-confirm" style={{ display: notifySubmitted ? 'flex' : 'none' }}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3E6B4F" strokeWidth="2.5">
-                    <path d="M20 6 9 17l-5-5" />
-                  </svg>
-                  <span>
-                    We'll message {notifyValue} the moment {p.name} is back.
-                  </span>
-                </div>
+                <p>Ask us on WhatsApp about the next batch and we will confirm availability.</p>
+                <button className="btn btn-rust btn-sm" onClick={() => onBuyOnWhatsapp(p, p.weights[0], 1)}>
+                  Ask on WhatsApp
+                </button>
               </div>
             )}
 

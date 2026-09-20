@@ -114,4 +114,4 @@ export function minPrice(p) {
   return Math.min(...p.weights.map((w) => w.price))
 }
 
-export const CAT_LABEL = { small: 'Small fish', big: 'Big fish' }
+export const CAT_LABEL = { Raw: 'Raw fish', Cleaned: 'Cleaned fish' }
