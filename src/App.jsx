@@ -3,15 +3,35 @@ import Header from './components/Header.jsx'
 import Home from './components/Home.jsx'
 import PDP from './components/PDP.jsx'
 import Process from './components/Process.jsx'
+import BulkOrders from './components/BulkOrders.jsx'
 import CartDrawer from './components/CartDrawer.jsx'
 import CheckoutModal from './components/CheckoutModal.jsx'
 import Toast from './components/Toast.jsx'
 import Footer from './components/Footer.jsx'
+import { PRODUCTS } from './data/products.js'
 import { WHATSAPP_NUMBER } from './config.js'
 
+function getHashRoute() {
+  const raw = (window.location.hash || '').replace(/^#/, '').replace(/^\/+/, '').trim()
+  if (!raw || raw === '/' || raw === 'home') return 'home'
+  const parts = raw.split('/')
+  if (parts[0] === 'product' && parts[1]) return 'pdp'
+  if (parts[0] === 'process') return 'process'
+  if (parts[0] === 'bulk') return 'bulk'
+  if (parts[0] === 'cart') return 'cart'
+  return 'home'
+}
+
+function getProductIdFromHash() {
+  const raw = (window.location.hash || '').replace(/^#/, '').replace(/^\/+/, '').trim()
+  const parts = raw.split('/')
+  if (parts[0] !== 'product' || !parts[1]) return null
+  return decodeURIComponent(parts.slice(1).join('/'))
+}
+
 export default function App() {
-  const [view, setView] = useState('home') // 'home' | 'pdp' | 'process'
-  const [currentProductId, setCurrentProductId] = useState(null)
+  const [view, setView] = useState(getHashRoute)
+  const [currentProductId, setCurrentProductId] = useState(() => getProductIdFromHash())
   const [cart, setCart] = useState([])
   const [cartOpen, setCartOpen] = useState(false)
   const [checkoutOpen, setCheckoutOpen] = useState(false)
@@ -25,27 +45,64 @@ export default function App() {
     toastTimer.current = setTimeout(() => setToast((t) => ({ ...t, show: false })), 2600)
   }
 
-  function goHome() {
-    setView('home')
+  function setRoute(nextView, productId = null) {
+    const nextHash = (() => {
+      switch (nextView) {
+        case 'home':
+          return '#/'
+        case 'pdp':
+          return productId ? `#/product/${encodeURIComponent(productId)}` : '#/'
+        case 'process':
+          return '#/process'
+        case 'bulk':
+          return '#/bulk'
+        case 'cart':
+          return '#/cart'
+        default:
+          return '#/'
+      }
+    })()
+
+    if (window.location.hash !== nextHash) {
+      window.history.pushState({}, '', `${window.location.pathname}${nextHash}`)
+    }
+
+    setView(nextView)
+    if (nextView === 'pdp') {
+      setCurrentProductId(productId)
+      setCartOpen(false)
+    } else {
+      setCurrentProductId(null)
+      setCartOpen(nextView === 'cart')
+    }
+
     window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' })
+  }
+
+  function goHome() {
+    setRoute('home')
   }
 
   function openPDP(id) {
-    setCurrentProductId(id)
-    setView('pdp')
-    window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' })
+    setRoute('pdp', id)
   }
 
   function showProcess() {
-    setView('process')
-    window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' })
+    setRoute('process')
   }
 
-  /* Works from any view: jumps home (if needed) then scrolls to the shop grid */
+  function showBulkOrders() {
+    setRoute('bulk')
+  }
+
+  function openCart() {
+    setRoute('cart')
+  }
+
   function scrollToShop() {
     if (view !== 'home') {
       pendingScroll.current = 'shop'
-      setView('home')
+      setRoute('home')
     } else {
       document.getElementById('shop')?.scrollIntoView({ behavior: 'smooth' })
     }
@@ -54,7 +111,7 @@ export default function App() {
   function scrollToAbout() {
     if (view !== 'home') {
       pendingScroll.current = 'about'
-      setView('home')
+      setRoute('home')
     } else {
       document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })
     }
@@ -63,6 +120,59 @@ export default function App() {
   function goToContact() {
     document.getElementById('footer-contact')?.scrollIntoView({ behavior: 'smooth' })
   }
+
+  useEffect(() => {
+    function syncFromHash() {
+      const raw = (window.location.hash || '').replace(/^#/, '').replace(/^\/+/, '').trim()
+      const route = getHashRoute()
+
+      if (route === 'pdp') {
+        const productId = getProductIdFromHash()
+        if (!productId || !PRODUCTS.some((p) => p.id === productId)) {
+          setRoute('home')
+          return
+        }
+        setCurrentProductId(productId)
+        setView('pdp')
+        setCartOpen(false)
+        return
+      }
+
+      if (route === 'home') {
+        setView('home')
+        setCurrentProductId(null)
+        setCartOpen(false)
+        return
+      }
+
+      if (route === 'process') {
+        setView('process')
+        setCurrentProductId(null)
+        setCartOpen(false)
+        return
+      }
+
+      if (route === 'bulk') {
+        setView('bulk')
+        setCurrentProductId(null)
+        setCartOpen(false)
+        return
+      }
+
+      if (route === 'cart') {
+        setView('cart')
+        setCurrentProductId(null)
+        setCartOpen(true)
+        return
+      }
+
+      setRoute('home')
+    }
+
+    syncFromHash()
+    window.addEventListener('hashchange', syncFromHash)
+    return () => window.removeEventListener('hashchange', syncFromHash)
+  }, [])
 
   useEffect(() => {
     if (view === 'home' && pendingScroll.current) {
@@ -88,7 +198,7 @@ export default function App() {
       ]
     })
     showToast(`Added ${product.name} (${weight.label}) × ${qty} to cart`)
-    setCartOpen(true)
+    setRoute('cart')
   }
 
   function removeFromCart(idx) {
@@ -118,6 +228,7 @@ export default function App() {
     setCartOpen(false)
     setCart([])
     showToast(`Payment successful! Payment ID: ${paymentId}`)
+    setRoute('home')
   }
 
   function handlePaymentError(message) {
@@ -134,10 +245,11 @@ export default function App() {
         onNavHome={goHome}
         onNavShop={scrollToShop}
         onNavProcess={showProcess}
+        onNavBulk={showBulkOrders}
         onNavContact={goToContact}
         onOpenPDP={openPDP}
         cartCount={cartCount}
-        onOpenCart={() => setCartOpen(true)}
+        onOpenCart={openCart}
       />
 
       {view === 'home' && (
@@ -157,19 +269,26 @@ export default function App() {
       )}
 
       {view === 'process' && <Process onBackHome={goHome} onShopClick={scrollToShop} />}
+      {view === 'bulk' && <BulkOrders onBackHome={goHome} onBackShop={scrollToShop} />}
 
-      <CartDrawer
-        open={cartOpen}
-        cart={cart}
-        onClose={() => setCartOpen(false)}
-        onRemove={removeFromCart}
-        onCheckout={checkoutFromCart}
-        onBrowse={() => {
-          setCartOpen(false)
-          scrollToShop()
-        }}
-        onPayOnline={() => setCheckoutOpen(true)}
-      />
+      {view === 'cart' && (
+        <CartDrawer
+          open={cartOpen}
+          cart={cart}
+          onClose={() => {
+            setCartOpen(false)
+            setRoute('home')
+          }}
+          onRemove={removeFromCart}
+          onCheckout={checkoutFromCart}
+          onBrowse={() => {
+            setCartOpen(false)
+            setRoute('home')
+            scrollToShop()
+          }}
+          onPayOnline={() => setCheckoutOpen(true)}
+        />
+      )}
 
       {checkoutOpen && (
         <CheckoutModal
@@ -186,6 +305,7 @@ export default function App() {
       <Footer
         onOpenPDP={openPDP}
         onShowProcess={showProcess}
+        onShowBulkOrders={showBulkOrders}
       />
     </>
   )
