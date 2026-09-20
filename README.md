@@ -1,8 +1,8 @@
 # Sudar Oli Dry Sea Foods — React + Vite
 
-This is a straight React + Vite conversion of the original single-file HTML site.
-No functionality was changed — same product data, cart, search, "How We Dry It" page,
-and the WhatsApp checkout handoff.
+React + Vite storefront for Sudar Oli Dry Sea Foods. The catalog in
+`src/data/products.js` is the current storefront catalog; inventory and orders should
+be replaced with backend data before production launch.
 
 ## Run it
 
@@ -42,8 +42,7 @@ src/
 
 - View switching (Home / PDP / Process) is done with React state instead of toggling
   `display:none` on DOM nodes.
-- The WhatsApp checkout link (`wa.me/919840012345`) and contact details are placeholders —
-  update them in `App.jsx` and `Footer.jsx` before going live.
+- WhatsApp contact routing is configured in `src/config.js`.
 
 ## Online payments (Razorpay)
 
@@ -64,3 +63,28 @@ Relevant files:
   opens Razorpay Checkout
 - `src/components/CheckoutModal.jsx` — collects name/phone before paying
 - `index.html` — includes the Razorpay Checkout script
+
+### Backend contract
+
+The frontend expects the backend configured by `VITE_API_BASE_URL` to provide:
+
+- `POST /api/payment/create-order` with `{ items, customer }`, returning
+  `{ ok, keyId, amount, currency, orderId }`.
+- `POST /api/payment/verify` with Razorpay's payment response, returning `{ ok }`.
+
+The backend must calculate the payable amount from its own product and inventory records,
+validate every item and quantity, create the Razorpay order with the server-side secret,
+and verify the signature before marking an order paid. Keep Razorpay keys and webhook
+secrets on the backend only. Use Razorpay test keys locally, then configure live keys
+and HTTPS in production. Do not put API secrets, Razorpay secret keys, database credentials,
+or webhook secrets in this repository or in any `VITE_*` variable: Vite embeds those values
+in the browser bundle.
+
+### Production security checklist
+
+- Serve the frontend and backend only over HTTPS and redirect HTTP to HTTPS.
+- Configure the backend CORS allowlist to the exact storefront origin.
+- Add authentication, rate limiting, request size limits, input validation, and server-side
+  inventory and price checks to the backend.
+- Verify Razorpay signatures and webhooks on the backend, and make payment/order writes idempotent.
+- Deploy `public/_headers` with a host that supports it, or copy its headers to your reverse proxy.

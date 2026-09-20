@@ -93,7 +93,7 @@ export default function Footer({ onOpenPDP, onShowProcess, onShowBulkOrders }) {
           <ul>
             <li style={{ display: 'flex', flexDirection: 'column', width: '278px' }}>
               <a
-                href="https://maps.google.com/?q=No+38,+PH+ROAD+-+Poonamalle+Highway,+Nerkundram,+Chennai,+Tamil+Nadu+600107"
+                href="https://maps.app.goo.gl/GBzogvaa5pu7QbWu5"
                 target="_blank"
                 rel="noreferrer"
                 style={{ textDecoration: 'none' }}

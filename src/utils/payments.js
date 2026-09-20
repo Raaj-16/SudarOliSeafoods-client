@@ -1,4 +1,4 @@
-import { API_BASE_URL } from '../config.js'
+import { API_BASE_URL, isSecureApiUrl } from '../config.js'
 
 /**
  * Loads the Razorpay Checkout script if it isn't already on the page
@@ -40,19 +40,48 @@ export async function payWithRazorpay({ amount, items = [], customer, onSuccess,
       return
     }
 
-    await ensureRazorpayLoaded()
+    if (!API_BASE_URL || !isSecureApiUrl()) {
+      onError?.('Online payments are temporarily unavailable. Please contact us on WhatsApp.')
+      return
+    }
 
-      const orderItems = items.map(({ id, weight, qty }) => ({ id, weight, qty }))
-      const orderRes = await fetch(`${API_BASE_URL}/api/payment/create-order`, {
+    if (!Number.isFinite(amount) || amount <= 0 || !Array.isArray(items) || items.length === 0) {
+      onError?.('Your cart is empty or invalid. Please add an item and try again.')
+      return
+    }
+
+    const normalizedPhone = customer.phone.replace(/\D/g, '')
+    if (!/^\d{10}$/.test(normalizedPhone)) {
+      onError?.('Please enter a valid 10-digit phone number.')
+      return
+    }
+
+    if (customer.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customer.email)) {
+      onError?.('Please enter a valid email address or leave it blank.')
+      return
+    }
+
+    const orderItems = items.map(({ id, weight, qty }) => ({ id, weight, qty }))
+    const orderRes = await fetch(`${API_BASE_URL}/api/payment/create-order`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ items: orderItems, customer }),
+      body: JSON.stringify({
+        items: orderItems,
+        customer: { ...customer, phone: normalizedPhone },
+      }),
     })
-    const orderData = await orderRes.json()
+    const orderData = await orderRes.json().catch(() => ({}))
     if (!orderRes.ok || !orderData.ok) {
       onError?.(orderData.error || 'Could not start the payment. Please try again.')
       return
     }
+
+    if (!orderData.keyId || !orderData.amount || !orderData.currency || !orderData.orderId) {
+      onError?.('The payment service returned an incomplete order. Please try again.')
+      return
+    }
+
+    await ensureRazorpayLoaded()
 
     const rzp = new window.Razorpay({
       key: orderData.keyId,
@@ -77,7 +106,7 @@ export async function payWithRazorpay({ amount, items = [], customer, onSuccess,
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(response),
           })
-          const verifyData = await verifyRes.json()
+          const verifyData = await verifyRes.json().catch(() => ({}))
           if (verifyRes.ok && verifyData.ok) {
             onSuccess?.({
               paymentId: response.razorpay_payment_id,
