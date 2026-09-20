@@ -72,9 +72,6 @@ export default function PDP({ productId, onBackHome, onBackShop, onOpenPDP, onAd
             <div className="pdp-local">{p.local}</div>
             <h1 className="pdp-title">{p.name}</h1>
             <div className="pdp-meta-row">
-              <div className="stars">
-                ★★★★☆ <span style={{ color: 'var(--ink-soft)', fontSize: 12.5 }}>(126 orders)</span>
-              </div>
               <span style={{ color: 'var(--line)' }}>|</span>
               <span style={{ fontSize: 12.5, color: 'var(--ink-soft)' }}>{CAT_LABEL[p.cat]}</span>
             </div>
