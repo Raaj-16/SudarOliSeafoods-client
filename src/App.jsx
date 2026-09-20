@@ -11,8 +11,11 @@ import Footer from './components/Footer.jsx'
 import { PRODUCTS } from './data/products.js'
 import { WHATSAPP_NUMBER } from './config.js'
 
-function getHashRoute() {
-  const raw = (window.location.hash || '').replace(/^#/, '').replace(/^\/+/, '').trim()
+function getPathRoute() {
+  const raw = (window.location.hash ? window.location.hash.replace(/^#/, '') : window.location.pathname)
+    .replace(/^\/+/, '')
+    .trim()
+
   if (!raw || raw === '/' || raw === 'home') return 'home'
   const parts = raw.split('/')
   if (parts[0] === 'product' && parts[1]) return 'pdp'
@@ -22,16 +25,19 @@ function getHashRoute() {
   return 'home'
 }
 
-function getProductIdFromHash() {
-  const raw = (window.location.hash || '').replace(/^#/, '').replace(/^\/+/, '').trim()
+function getProductIdFromPath() {
+  const raw = (window.location.hash ? window.location.hash.replace(/^#/, '') : window.location.pathname)
+    .replace(/^\/+/, '')
+    .trim()
+
   const parts = raw.split('/')
   if (parts[0] !== 'product' || !parts[1]) return null
   return decodeURIComponent(parts.slice(1).join('/'))
 }
 
 export default function App() {
-  const [view, setView] = useState(getHashRoute)
-  const [currentProductId, setCurrentProductId] = useState(() => getProductIdFromHash())
+  const [view, setView] = useState(getPathRoute)
+  const [currentProductId, setCurrentProductId] = useState(() => getProductIdFromPath())
   const [cart, setCart] = useState([])
   const [cartOpen, setCartOpen] = useState(false)
   const [checkoutOpen, setCheckoutOpen] = useState(false)
@@ -46,25 +52,26 @@ export default function App() {
   }
 
   function setRoute(nextView, productId = null) {
-    const nextHash = (() => {
+    const nextPath = (() => {
       switch (nextView) {
         case 'home':
-          return '#/'
+          return '/'
         case 'pdp':
-          return productId ? `#/product/${encodeURIComponent(productId)}` : '#/'
+          return productId ? `/product/${encodeURIComponent(productId)}` : '/'
         case 'process':
-          return '#/process'
+          return '/process'
         case 'bulk':
-          return '#/bulk'
+          return '/bulk'
         case 'cart':
-          return '#/cart'
+          return '/cart'
         default:
-          return '#/'
+          return '/'
       }
     })()
 
-    if (window.location.hash !== nextHash) {
-      window.history.pushState({}, '', `${window.location.pathname}${nextHash}`)
+    const currentPath = window.location.hash ? window.location.hash.replace(/^#/, '') : window.location.pathname
+    if (currentPath !== nextPath) {
+      window.history.pushState({}, '', nextPath)
     }
 
     setView(nextView)
@@ -122,12 +129,14 @@ export default function App() {
   }
 
   useEffect(() => {
-    function syncFromHash() {
-      const raw = (window.location.hash || '').replace(/^#/, '').replace(/^\/+/, '').trim()
-      const route = getHashRoute()
+    function syncFromRoute() {
+      const raw = (window.location.hash ? window.location.hash.replace(/^#/, '') : window.location.pathname)
+        .replace(/^\/+/, '')
+        .trim()
+      const route = getPathRoute()
 
       if (route === 'pdp') {
-        const productId = getProductIdFromHash()
+        const productId = getProductIdFromPath()
         if (!productId || !PRODUCTS.some((p) => p.id === productId)) {
           setRoute('home')
           return
@@ -169,9 +178,13 @@ export default function App() {
       setRoute('home')
     }
 
-    syncFromHash()
-    window.addEventListener('hashchange', syncFromHash)
-    return () => window.removeEventListener('hashchange', syncFromHash)
+    syncFromRoute()
+    window.addEventListener('popstate', syncFromRoute)
+    window.addEventListener('hashchange', syncFromRoute)
+    return () => {
+      window.removeEventListener('popstate', syncFromRoute)
+      window.removeEventListener('hashchange', syncFromRoute)
+    }
   }, [])
 
   useEffect(() => {
