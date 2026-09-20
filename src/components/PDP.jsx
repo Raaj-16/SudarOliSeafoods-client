@@ -38,11 +38,11 @@ export default function PDP({ productId, onBackHome, onBackShop, onOpenPDP, onAd
   const accItems = [
     {
       title: 'Storage & shelf life',
-      body: 'Keep refrigerated or in an airtight container away from moisture. Best used within 3 months of purchase for full flavour. Sun-dried fish naturally intensifies in saltiness over time — a light rinse before cooking is recommended.',
+      body: 'Keep Away from refrigerator or keep in an airtight container away from moisture. Best used within 3 months of purchase for full flavour. Sun-dried fish naturally intensifies in saltiness over time — a light rinse before cooking is recommended.',
     },
     {
       title: 'Delivery & packaging',
-      body: 'Vacuum-sealed in food-grade pouches to control odour in transit. Chennai orders placed before 3 PM are delivered the same day. Other Tamil Nadu districts: 2–3 working days. Cash on delivery available on orders above ₹2,000.',
+      body: 'Vacuum-sealed in food-grade pouches to control odour in transit. Chennai orders placed before 3 PM are delivered the same day. Other Tamil Nadu districts: 2–3 working days.',
     },
     {
       title: "Where it's from",
@@ -72,9 +72,6 @@ export default function PDP({ productId, onBackHome, onBackShop, onOpenPDP, onAd
             <div className="pdp-local">{p.local}</div>
             <h1 className="pdp-title">{p.name}</h1>
             <div className="pdp-meta-row">
-              <div className="stars">
-                ★★★★☆ <span style={{ color: 'var(--ink-soft)', fontSize: 12.5 }}>(126 orders)</span>
-              </div>
               <span style={{ color: 'var(--line)' }}>|</span>
               <span style={{ fontSize: 12.5, color: 'var(--ink-soft)' }}>{CAT_LABEL[p.cat]}</span>
             </div>

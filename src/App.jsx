@@ -4,6 +4,7 @@ import Home from './components/Home.jsx'
 import PDP from './components/PDP.jsx'
 import Process from './components/Process.jsx'
 import BulkOrders from './components/BulkOrders.jsx'
+import FavouritesPage from './components/FavouritesPage.jsx'
 import CartDrawer from './components/CartDrawer.jsx'
 import CheckoutModal from './components/CheckoutModal.jsx'
 import Toast from './components/Toast.jsx'
@@ -11,33 +12,42 @@ import Footer from './components/Footer.jsx'
 import { PRODUCTS } from './data/products.js'
 import { WHATSAPP_NUMBER } from './config.js'
 
-function getPathRoute() {
-  const raw = (window.location.hash ? window.location.hash.replace(/^#/, '') : window.location.pathname)
-    .replace(/^\/+/, '')
-    .trim()
+const FAVORITES_KEY = 'sudaroli-favourites'
 
+function loadFavorites() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(FAVORITES_KEY) || '[]')
+    if (!Array.isArray(saved)) return []
+    return [...new Set(saved.map((id) => id.includes('-') ? id : `${id}-raw`))]
+  } catch {
+    return []
+  }
+}
+
+function getHashRoute() {
+  const raw = (window.location.hash || '').replace(/^#/, '').replace(/^\/+/, '').trim()
   if (!raw || raw === '/' || raw === 'home') return 'home'
   const parts = raw.split('/')
   if (parts[0] === 'product' && parts[1]) return 'pdp'
   if (parts[0] === 'process') return 'process'
   if (parts[0] === 'bulk') return 'bulk'
+  if (parts[0] === 'favourites') return 'favourites'
   if (parts[0] === 'cart') return 'cart'
   return 'home'
 }
 
-function getProductIdFromPath() {
-  const raw = (window.location.hash ? window.location.hash.replace(/^#/, '') : window.location.pathname)
-    .replace(/^\/+/, '')
-    .trim()
-
+function getProductIdFromHash() {
+  const raw = (window.location.hash || '').replace(/^#/, '').replace(/^\/+/, '').trim()
   const parts = raw.split('/')
   if (parts[0] !== 'product' || !parts[1]) return null
   return decodeURIComponent(parts.slice(1).join('/'))
 }
 
 export default function App() {
-  const [view, setView] = useState(getPathRoute)
-  const [currentProductId, setCurrentProductId] = useState(() => getProductIdFromPath())
+  const [view, setView] = useState(getHashRoute)
+  const [currentProductId, setCurrentProductId] = useState(() => getProductIdFromHash())
+  const [shopFilter, setShopFilter] = useState('all')
+  const [favoriteIds, setFavoriteIds] = useState(loadFavorites)
   const [cart, setCart] = useState([])
   const [cartOpen, setCartOpen] = useState(false)
   const [checkoutOpen, setCheckoutOpen] = useState(false)
@@ -52,26 +62,27 @@ export default function App() {
   }
 
   function setRoute(nextView, productId = null) {
-    const nextPath = (() => {
+    const nextHash = (() => {
       switch (nextView) {
         case 'home':
-          return '/'
+          return '#/'
         case 'pdp':
-          return productId ? `/product/${encodeURIComponent(productId)}` : '/'
+          return productId ? `#/product/${encodeURIComponent(productId)}` : '#/'
         case 'process':
-          return '/process'
+          return '#/process'
         case 'bulk':
-          return '/bulk'
+          return '#/bulk'
+        case 'favourites':
+          return '#/favourites'
         case 'cart':
-          return '/cart'
+          return '#/cart'
         default:
-          return '/'
+          return '#/'
       }
     })()
 
-    const currentPath = window.location.hash ? window.location.hash.replace(/^#/, '') : window.location.pathname
-    if (currentPath !== nextPath) {
-      window.history.pushState({}, '', nextPath)
+    if (window.location.hash !== nextHash) {
+      window.history.pushState({}, '', `${window.location.pathname}${nextHash}`)
     }
 
     setView(nextView)
@@ -106,7 +117,17 @@ export default function App() {
     setRoute('cart')
   }
 
+  function openFavourites() {
+    setShopFilter('all')
+    setRoute('favourites')
+  }
+
+  function setFilter(nextFilter) {
+    setShopFilter(nextFilter)
+  }
+
   function scrollToShop() {
+    setShopFilter('all')
     if (view !== 'home') {
       pendingScroll.current = 'shop'
       setRoute('home')
@@ -129,14 +150,12 @@ export default function App() {
   }
 
   useEffect(() => {
-    function syncFromRoute() {
-      const raw = (window.location.hash ? window.location.hash.replace(/^#/, '') : window.location.pathname)
-        .replace(/^\/+/, '')
-        .trim()
-      const route = getPathRoute()
+    function syncFromHash() {
+      const raw = (window.location.hash || '').replace(/^#/, '').replace(/^\/+/, '').trim()
+      const route = getHashRoute()
 
       if (route === 'pdp') {
-        const productId = getProductIdFromPath()
+        const productId = getProductIdFromHash()
         if (!productId || !PRODUCTS.some((p) => p.id === productId)) {
           setRoute('home')
           return
@@ -168,6 +187,13 @@ export default function App() {
         return
       }
 
+      if (route === 'favourites') {
+        setView('favourites')
+        setCurrentProductId(null)
+        setCartOpen(false)
+        return
+      }
+
       if (route === 'cart') {
         setView('cart')
         setCurrentProductId(null)
@@ -178,13 +204,9 @@ export default function App() {
       setRoute('home')
     }
 
-    syncFromRoute()
-    window.addEventListener('popstate', syncFromRoute)
-    window.addEventListener('hashchange', syncFromRoute)
-    return () => {
-      window.removeEventListener('popstate', syncFromRoute)
-      window.removeEventListener('hashchange', syncFromRoute)
-    }
+    syncFromHash()
+    window.addEventListener('hashchange', syncFromHash)
+    return () => window.removeEventListener('hashchange', syncFromHash)
   }, [])
 
   useEffect(() => {
@@ -196,6 +218,10 @@ export default function App() {
       })
     }
   }, [view])
+
+  useEffect(() => {
+    localStorage.setItem(FAVORITES_KEY, JSON.stringify(favoriteIds))
+  }, [favoriteIds])
 
   function addToCart(product, weight, qty) {
     setCart((prev) => {
@@ -250,6 +276,7 @@ export default function App() {
 
   const cartCount = cart.reduce((a, c) => a + c.qty, 0)
   const cartSubtotal = cart.reduce((a, c) => a + c.price * c.qty, 0)
+  const favoriteCount = favoriteIds.length
 
   return (
     <>
@@ -263,10 +290,31 @@ export default function App() {
         onOpenPDP={openPDP}
         cartCount={cartCount}
         onOpenCart={openCart}
+        onOpenFavourites={openFavourites}
+        favouriteCount={favoriteCount}
       />
 
       {view === 'home' && (
-        <Home onOpenPDP={openPDP} onShopClick={scrollToShop} onAboutClick={scrollToAbout} onSeeProcess={showProcess} />
+        <Home
+          onOpenPDP={openPDP}
+          onShopClick={scrollToShop}
+          onAboutClick={scrollToAbout}
+          onSeeProcess={showProcess}
+          onOpenFavourites={openFavourites}
+          shopFilter={shopFilter}
+          setShopFilter={setFilter}
+          favoriteIds={favoriteIds}
+          setFavoriteIds={setFavoriteIds}
+        />
+      )}
+
+      {view === 'favourites' && (
+        <FavouritesPage
+          favoriteIds={favoriteIds}
+          setFavoriteIds={setFavoriteIds}
+          onOpenPDP={openPDP}
+          onBackShop={scrollToShop}
+        />
       )}
 
       {view === 'pdp' && currentProductId && (

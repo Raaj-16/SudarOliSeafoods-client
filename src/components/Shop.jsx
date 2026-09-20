@@ -2,16 +2,26 @@ import { useState } from 'react'
 import ProductCard from './ProductCard.jsx'
 import { PRODUCTS } from '../data/products.js'
 
-export default function Shop({ onOpenPDP }) {
-  const [filter, setFilter] = useState('all')
+export default function Shop({ onOpenPDP, filter: activeFilter, setFilter, onOpenFavourites, favoriteIds, setFavoriteIds }) {
   const [search, setSearch] = useState('')
 
+  const favorites = favoriteIds
+
   const q = search.toLowerCase().trim()
+  const favouritesCount = favorites.length
   const list = PRODUCTS.filter((p) => {
-    const matchCat = filter === 'all' || p.cat === filter
+    const matchFavorites = activeFilter !== 'favourites' || favorites.includes(p.id)
+    const matchCat = activeFilter === 'all' || activeFilter === 'favourites' ? true : p.cat === activeFilter
     const matchQ = !q || p.name.toLowerCase().includes(q) || p.local.toLowerCase().includes(q)
-    return matchCat && matchQ
+    return matchFavorites && matchCat && matchQ
   })
+
+  function toggleFavorite(productId) {
+    setFavoriteIds((prev) => {
+      const next = prev.includes(productId) ? prev.filter((id) => id !== productId) : [...prev, productId]
+      return next
+    })
+  }
 
   return (
     <section className="section" id="shop">
@@ -24,14 +34,17 @@ export default function Shop({ onOpenPDP }) {
         </div>
 
         <div className="filters">
-          <button className={`chip${filter === 'all' ? ' active' : ''}`} onClick={() => setFilter('all')}>
+          <button className={`chip${activeFilter === 'all' ? ' active' : ''}`} onClick={() => setFilter('all')}>
             All
           </button>
-          <button className={`chip${filter === 'Raw' ? ' active' : ''}`} onClick={() => setFilter('Raw')}>
+          <button className={`chip${activeFilter === 'Raw' ? ' active' : ''}`} onClick={() => setFilter('Raw')}>
             Raw fish
           </button>
-          <button className={`chip${filter === 'Cleaned' ? ' active' : ''}`} onClick={() => setFilter('Cleaned')}>
+          <button className={`chip${activeFilter === 'Cleaned' ? ' active' : ''}`} onClick={() => setFilter('Cleaned')}>
             Cleaned fish
+          </button>
+          <button className={`chip${activeFilter === 'favourites' ? ' active' : ''}`} onClick={onOpenFavourites}>
+            Favourites {favouritesCount > 0 ? `(${favouritesCount})` : ''}
           </button>
           <div className="search-box">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4A4436" strokeWidth="2">
@@ -49,10 +62,20 @@ export default function Shop({ onOpenPDP }) {
 
         <div className="grid">
           {list.length ? (
-            list.map((p) => <ProductCard key={p.id} product={p} onOpenPDP={onOpenPDP} />)
+            list.map((p) => (
+              <ProductCard
+                key={p.id}
+                product={p}
+                onOpenPDP={onOpenPDP}
+                isFavorite={favorites.includes(p.id)}
+                onToggleFavorite={toggleFavorite}
+              />
+            ))
           ) : (
             <p style={{ color: 'var(--ink-soft)', padding: '20px 0' }}>
-              No dry fish matches "{search}" — try another name.
+              {activeFilter === 'favourites'
+                ? 'No favourite items yet — tap the heart icon on any product to save it here.'
+                : `No dry fish matches "${search}" — try another name.`}
             </p>
           )}
         </div>

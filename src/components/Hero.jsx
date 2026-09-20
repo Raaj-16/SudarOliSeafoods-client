@@ -32,7 +32,7 @@ export default function Hero({ onShopClick, onAboutClick, onOpenPDP }) {
               <div className="l">Years of industry experience</div>
             </div>
             <div className="stat">
-              <div className="n">6</div>
+              <div className="n">6+</div>
               <div className="l">Varieties in season</div>
             </div>
             <div className="stat">

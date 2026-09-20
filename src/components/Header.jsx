@@ -3,7 +3,7 @@ import logo220 from '../assets/logo-220.png'
 import ProductIcon from './ProductIcon.jsx'
 import { PRODUCTS, stockLabel, minPrice } from '../data/products.js'
 
-export default function Header({ view, onNavHome, onNavShop, onNavProcess, onNavBulk, onNavContact, onOpenPDP, cartCount, onOpenCart }) {
+export default function Header({ view, onNavHome, onNavShop, onNavProcess, onNavBulk, onNavContact, onOpenPDP, cartCount, onOpenCart, onOpenFavourites, favouriteCount }) {
   const [searchOpen, setSearchOpen] = useState(false)
   const [query, setQuery] = useState('')
   const wrapRef = useRef(null)
@@ -105,7 +105,7 @@ export default function Header({ view, onNavHome, onNavShop, onNavProcess, onNav
                 onChange={(e) => setQuery(e.target.value)}
               />
               <div className="search-results">
-                {!q && <div className="sr-hint">Try "vanjaram", "nethili", "choora"…</div>}
+                {!q && <div className="sr-hint">Try "vanjaram", "nethili", "soora"…</div>}
                 {q && matches.length === 0 && <div className="sr-empty">No dry fish matches "{q}".</div>}
                 {q &&
                   matches.map((p) => (
@@ -133,6 +133,12 @@ export default function Header({ view, onNavHome, onNavShop, onNavProcess, onNav
               </div>
             </div>
           </div>
+          <button className="icon-btn" aria-label="Open favourites" onClick={onOpenFavourites}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#221F1A" strokeWidth="2">
+              <path d="M12 21s-6.7-4.35-9.33-8.07C.74 10.76 2.12 5 7.12 5c2.12 0 3.4 1.15 4.88 2.8C13.48 6.15 14.76 5 16.88 5c5 0 6.38 5.76 4.45 7.93C18.7 16.65 12 21 12 21z" />
+            </svg>
+            {favouriteCount > 0 && <span className="cart-count">{favouriteCount}</span>}
+          </button>
           <button className="icon-btn" aria-label="Open cart" onClick={onOpenCart}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#221F1A" strokeWidth="2">
               <path d="M3 3h2l2.4 12.4a2 2 0 0 0 2 1.6h8.2a2 2 0 0 0 2-1.6L21 8H6" />
